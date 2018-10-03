@@ -24,7 +24,7 @@ def getArgs():
 
 if __name__ == '__main__':
     csvFile, user = getArgs()   # Parsing args
-    checkArgs(user, csvFile)          # Checking if user given was fine
+    checkArgs(user, csvFile)    # Checking if user given was fine
     
     usersDict, movieNames = readCsv(csvFile)
 
