@@ -1,36 +1,39 @@
-import os, sys, re
-import csv
+#!/usr/bin/python3
 
-def errCheck():
-    if len(sys.argv) < 2:
-        sys.stderr.write("You should profile a CSV file as an argument\n")
-        exit(1)
-    if not os.path.isfile(sys.argv[1]):
-        sys.stderr.write(f"File '{sys.argv[1]}' does not exist\n")
-        exit(1)
+from os.path import isfile
+from sys import stderr, argv
+from argparse import ArgumentParser
+from numpy import array
 
-def readCsv(filename):
-    """Parsing 2d table into dictionary and a list of movie names"""
-    delWordRegex = re.compile(r"[a-z]", re.IGNORECASE)
-    with open(filename) as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        rowN = 0
-        usersDict = {}
-        for row in reader:
-            if rowN == 0:
-                row.pop(0)
-                movieNames = [i.lower().strip() for i in row]
-            else:
-                username = int(row.pop(0).replace('User', '').strip())
-                users = [int(i.strip()) for i in row]
-                usersDict[username] = users
-            rowN += 1
-    return usersDict, movieNames
+from lib import readCsv, getRatingForUser
+
+def checkArgs(user: int, file):
+    if user < 1:
+        stderr.write("User can't be less than 1.")
+        exit(1)
+    if not isfile(file):
+        stderr.write(f"File '{file}' is not accessible.")
+        exit(1)        
+
+def getArgs():
+    parser = ArgumentParser(description='Getting file and user number')
+    parser.add_argument('--file', dest='csvfile', help='CSV data file')
+    parser.add_argument('--user', dest='user', help='User id from file')
+    args = parser.parse_args()
+    return args.csvfile, int(args.user)
 
 if __name__ == '__main__':
-    errCheck()                  # Checking if script was properly called
-    csvFile = sys.argv[1]       # data.csv
+    csvFile, user = getArgs()   # Parsing args
+    checkArgs(user, csvFile)          # Checking if user given was fine
+    
     usersDict, movieNames = readCsv(csvFile)
-    print(usersDict)
-    print(movieNames)
+
+    # Transform python's dict to numpy's array
+    usersArr = array(
+        [ usersDict[user] for user in sorted(usersDict.keys()) ]
+    )
+    # So now the users are counted from 0
+    user -= 1
+
+    ratings = dict(getRatingForUser(user=user, data=usersArr))
     
