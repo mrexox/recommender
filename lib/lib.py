@@ -2,11 +2,13 @@ from csv import reader
 from re import compile, IGNORECASE
 from numpy import ndarray, nditer, arange, size
 
-from recommendator import Recommender
+from lib.recommender import Recommender
+
 
 def readCsv(filename):
     """Parsing 2d table into dictionary and a list of movie names"""
     delWordRegex = compile(r"[a-z]", IGNORECASE)
+    
     with open(filename) as csvfile:
         table = reader(csvfile, delimiter=',')
         rowN = 0
@@ -32,6 +34,5 @@ def getRatingForUser(user: int, data: ndarray):
         raise Exception('Bad parameters given')
 
     # Get the rates for all the films `user` didn't rate
-    recomm = Recommender(user, data)
-    return recomm.getRatingForFilms(unwatched)
-
+    r = Recommender(user, data)
+    return r.recommend()

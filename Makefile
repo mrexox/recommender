@@ -1,9 +1,9 @@
 .PHONY: run
 
-USER     := 1
+USR     ?= 1
 CSVFILE  := data.csv
 
 run: 
-	python3 recommend.py --file $(CSVFILE) --user $(USER)
+	python3 recommend.py --file $(CSVFILE) --user $(USR)
 
 
