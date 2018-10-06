@@ -13,7 +13,7 @@ def checkArgs(user: int, file):
         exit(1)
     if not isfile(file):
         stderr.write(f"File '{file}' is not accessible.")
-        exit(1)        
+        exit(1)
 
 def getArgs():
     parser = ArgumentParser(description='Getting file and user number')
@@ -25,10 +25,10 @@ def getArgs():
 if __name__ == '__main__':
     csvFile, user = getArgs()   # Parsing args
     checkArgs(user, csvFile)    # Checking if user given was fine
-    
+
     usersDict, movieNames = readCsv(csvFile)
     assert user <= max(usersDict.keys())
-    
+
     # Transform python's dict to numpy's array
     usersArr = array(
         [ usersDict[user] for user in sorted(usersDict.keys()) ]
@@ -38,5 +38,4 @@ if __name__ == '__main__':
 
     ratings = dict(getRatingForUser(user=user, data=usersArr))
     for key, value in ratings.items():
-        print(movieNames[key], ':', round(value, 2))
-    
+        print(movieNames[key], ':', round(value, 3))
