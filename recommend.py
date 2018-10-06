@@ -4,6 +4,7 @@ from os.path import isfile
 from sys import stderr, argv
 from argparse import ArgumentParser
 from numpy import array
+from json import dumps
 
 from lib.lib import readCsv, getRatingForUser
 
@@ -37,5 +38,7 @@ if __name__ == '__main__':
     user -= 1
 
     ratings = dict(getRatingForUser(user=user, data=usersArr))
-    for key, value in ratings.items():
-        print(movieNames[key], ':', round(value, 3))
+    print(dumps({
+        "user": user+1,
+        "1": {movieNames[k]: round(v, 3) for k, v in ratings.items()}
+    }, indent=4))

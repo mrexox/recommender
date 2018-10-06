@@ -33,21 +33,21 @@ class Recommender():
             # Conting sim - similarity metrics
             self.sims[it] = self.countSim(it)
 
+        # Users that are very closed to the given one
+        # Sorted from most to least closed
+        self.closestUsers = sorted(self.sims.keys(),
+                                   key=self.sims.__getitem__,
+                                   reverse=True,
+        )
+
     def recommend(self):
         """Returns list of tuples: [(film_index, rating), ... ]"""
         for film in self.unwatched:
             yield film, self.recommendForFilm(film)
 
     def recommendForFilm(self, film):
-        # FIXME out of here
-        kArray = sorted(self.sims.keys(),
-                        key=self.sims.__getitem__,
-                        reverse=True,
-        )
-        count = 0
-
-        lower = upper = 0
-        for i in kArray:
+        count = lower = upper = 0
+        for i in self.closestUsers:
             if count == self.KNN:
                 break
             if self.data[i][film] == -1:
