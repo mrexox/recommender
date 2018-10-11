@@ -6,6 +6,7 @@ class Recommender():
     """
     The class, that accepts the user and csv parsed data
     and calculates the result using logic, required in the task.
+    KNN = 7 by default
     """
     KNN = 7
 
@@ -84,3 +85,22 @@ class Recommender():
             c += 1
 
         return s / c
+
+    def recommend2(self, dayData, placeData):
+        """
+        Recommends a film using day and data when it was watched
+        by other people.
+        """
+        filmsToRecommend = {}
+        for film in arange(size(self.data, 1)):
+            if self.data[self.user][film] == -1:
+                for user in self.closestUsers:
+                    if not film in filmsToRecommend.keys():
+                        filmsToRecommend[film] = 0
+                    if ( dayData[user][film] == 'Sat' or \
+                         dayData[user][film] == 'Sun' ) and \
+                        placeData[user][film] == 'h' and \
+                       self.sims[user] > 0.9:
+                        filmsToRecommend[film] += float(self.sims[user])
+
+        return filmsToRecommend

@@ -8,7 +8,7 @@ from lib.recommender import Recommender
 def readCsv(filename):
     """Parsing 2d table into dictionary and a list of movie names"""
     delWordRegex = compile(r"[a-z]", IGNORECASE)
-    
+
     with open(filename) as csvfile:
         table = reader(csvfile, delimiter=',')
         rowN = 0
@@ -19,7 +19,7 @@ def readCsv(filename):
                 movieNames = [i.lower().strip() for i in row]
             else:
                 username = int(row.pop(0).replace('User', '').strip())
-                users = [int(i.strip()) for i in row]
+                users = [i.strip() for i in row]
                 usersDict[username] = users
             rowN += 1
     return usersDict, movieNames
@@ -29,10 +29,22 @@ def getRatingForUser(user: int, data: ndarray):
     Gets the job done. Finding the rating for films, that
     the given user didn't watch|rate.
     """
-    
+
     if user < 0 or user >= data.size:
         raise Exception('Bad parameters given')
 
     # Get the rates for all the films `user` didn't rate
     r = Recommender(user, data)
     return r.recommend()
+
+def getTheBestFilms(user: int, days, places, data):
+    r = Recommender(user, data)
+    films = r.recommend2(days, places)
+    m = 0
+    for k, v in films.items():
+        if v > m:
+            m = v
+            key = k
+    if m == 0:
+        return {}
+    return {key:m}

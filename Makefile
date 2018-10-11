@@ -1,11 +1,16 @@
 .PHONY: run
 
 USR      ?= 1
-CSVFILE  := data.csv
-OUTFILE  := User_$(USR).json
+CSVFILE   := data.csv
+DAYFILE   := context_day.csv
+PLACEFILE := context_place.csv
+OUTFILE   := User_$(USR).json
 
 run:
-	python3 recommend.py --file $(CSVFILE) --user $(USR) > $(OUTFILE)
+	python3 recommend.py --data-file $(CSVFILE) \
+			     --day-file $(DAYFILE) \
+			     --place-file $(PLACEFILE) \
+			     --user $(USR) > $(OUTFILE)
 
 clean:
 	find . -name '*~' -exec rm -rf \{\} \+
