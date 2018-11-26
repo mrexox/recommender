@@ -4,6 +4,7 @@ USR       ?= 1
 CSVFILE   := data/data.csv
 DAYFILE   := data/context_day.csv
 PLACEFILE := data/context_place.csv
+FILMNAMES := data/films
 OUTFILE   := User_$(USR).json
 
 run:
@@ -11,8 +12,10 @@ run:
 			     --day-file $(DAYFILE) \
 			     --place-file $(PLACEFILE) \
 			     --user $(USR) > $(OUTFILE)
+	python3 sparql.py $(OUTFILE) $(FILMNAMES)
 
 sparql:
+	# Robin Hood film sparql
 	python3 sparql.py
 
 clean:
